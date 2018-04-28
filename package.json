@@ -1,0 +1,54 @@
+{
+  "name": "shogan",
+  "version": "1.0.0",
+  "description": "Organize your TV Shows",
+  "main": "./dist/shogan.js",
+  "scripts": {
+    "start": "babel-node src/shogan.js",
+    "init": "mkdir dist",
+    "clean": "rimraf ./dist",
+    "preinstall": "npm run clean && npm run init",
+    "install": "babel ./src -d ./dist"
+  },
+  "bin": {
+    "shogan": "./bin/index.js"
+  },
+  "preferGlobal": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oddoye-david/shogan.git"
+  },
+  "keywords": [
+    "tv",
+    "shows",
+    "cli"
+  ],
+  "author": "David Oddoye <oddoyedavid@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oddoye-david/shogan/issues"
+  },
+  "homepage": "https://github.com/oddoye-david/shogan#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "rimraf": "^2.6.2"
+  },
+  "dependencies": {
+    "@v3rse/chroma": "^1.1.0",
+    "clear": "^0.1.0",
+    "configstore": "^3.1.2",
+    "figlet": "^1.2.0",
+    "glob": "^7.1.2",
+    "inquirer": "^5.2.0",
+    "inquirer-directory": "^2.1.0",
+    "mkdirp": "^0.5.1"
+  },
+  "files": [
+    "dist"
+  ]
+}
