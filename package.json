@@ -1,14 +1,11 @@
 {
   "name": "shogan",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "Organize your TV Shows",
   "main": "./dist/shogan.js",
   "scripts": {
     "start": "babel-node src/shogan.js",
-    "init": "mkdir dist",
-    "clean": "rimraf ./dist",
-    "preinstall": "npm run clean && npm run init",
-    "install": "babel ./src -d ./dist"
+    "prepublishOnly": "./node_modules/.bin/babel ./src -d ./dist"
   },
   "bin": {
     "shogan": "./bin/index.js"
@@ -49,6 +46,7 @@
     "mkdirp": "^0.5.1"
   },
   "files": [
-    "dist"
+    "dist",
+    "bin"
   ]
 }
