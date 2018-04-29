@@ -4,6 +4,8 @@ import clear from 'clear';
 import glob from 'glob';
 import path from 'path';
 
+import pack from '../package.json';
+
 import { copyFiles } from './lib/files';
 
 import { getShowDirectories, getSearchQuery, getShowDetails, moveOrCopy } from './lib/inquirer';
@@ -11,7 +13,7 @@ import { getShowDirectories, getSearchQuery, getShowDetails, moveOrCopy } from '
 // TODO: Run in loop to copy/move multiple shows
 (async function main() {
   clear();
-  console.log(chroma.red(figlet.textSync('Shogan', { horizontalLayout: 'full' })));
+  console.log(chroma.red(figlet.textSync(`Shogan v${pack.version}`, { horizontalLayout: 'full' })));
   // TODO: Check if provided already and display. Ask if they want to change
   const showDirectories = await getShowDirectories();
   Object.entries(showDirectories).forEach(([key, value]) => {
