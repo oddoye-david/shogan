@@ -1,6 +1,6 @@
 {
   "name": "shogan",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Organize your TV Shows",
   "main": "./dist/shogan.js",
   "scripts": {
