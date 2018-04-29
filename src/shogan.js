@@ -14,6 +14,9 @@ import { getShowDirectories, getSearchQuery, getShowDetails, moveOrCopy } from '
   console.log(chroma.red(figlet.textSync('Shogan', { horizontalLayout: 'full' })));
   // TODO: Check if provided already and display. Ask if they want to change
   const showDirectories = await getShowDirectories();
+  Object.entries(showDirectories).forEach(([key, value]) => {
+    showDirectories[key] = `/home/${value}`;
+  });
   const searchQuery = await getSearchQuery();
   const showDetails = await getShowDetails();
   const move = await moveOrCopy();

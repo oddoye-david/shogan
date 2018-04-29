@@ -1,20 +1,27 @@
 import inquirer from 'inquirer';
-import path from 'path';
 import chroma from '@v3rse/chroma';
 
+inquirer.registerPrompt('directory', require('inquirer-directory'));
+
 export const getShowDirectories = () => {
-  // TODO: Use a directory picker of sorts or allow autocomplete at least
   const questions = [
     {
-      type: 'input',
+      type: 'directory',
       name: 'unorganizedShowsDirectory',
       message: 'Where are your unorganized shows?',
-      validate: value => (path.isAbsolute(value) ? true : 'Path must be absolute directory'),
-    }, {
-      type: 'input',
+      basePath: '/home',
+      transformer(dir) {
+        return `~/${dir}`;
+      },
+    },
+    {
+      type: 'directory',
       name: 'organizedShowsDirectory',
       message: 'Where would you like to store your organized shows?',
-      validate: value => (path.isAbsolute(value) ? true : 'Path must be absolute directory'),
+      basePath: '/home',
+      transformer(dir) {
+        return `~/${dir}`;
+      },
     },
   ];
 
