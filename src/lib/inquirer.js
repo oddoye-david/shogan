@@ -66,3 +66,13 @@ export const moveOrCopy = () => {
 
   return inquirer.prompt([question]);
 };
+
+export const updateShowDirectories = () => {
+  const question = {
+    type: 'confirm',
+    name: 'update',
+    message: 'Update directories for TV Shows?',
+  };
+
+  return inquirer.prompt([question]);
+};
