@@ -3,38 +3,68 @@ import fs from 'fs';
 import path from 'path';
 import chroma from '@v3rse/chroma';
 import mkdirp from 'mkdirp';
+import cliProgress from 'cli-progress';
 
-export const copyFile = (inputFile, outputDirectory, incomingDirectory, move) => {
-  const file = inputFile.substring(inputFile.lastIndexOf('/') + 1);
-  const fullPath = path.join(
-    incomingDirectory,
-    inputFile,
-  );
-  console.log(chroma.yellow(`${move ? 'Moving' : 'Copying'} ${inputFile} to ${outputDirectory}`));
-
-  fs.copyFile(fullPath, path.join(outputDirectory, file), (err) => {
-    if (err) {
-      return console.log(chroma.red(`Error ${move ? 'moving' : 'copying'} ${inputFile}`), err);
+export const copyFile =
+  (inputFiles, outputDirectory, incomingDirectory, move) => new Promise((resolve, reject) => {
+    if (!inputFiles.length) {
+      resolve();
     }
 
-    if (move) {
-      fs.unlinkSync(fullPath);
-      return console.log(chroma.green(`Moved ${inputFile} successfuly`));
-    }
+    const inputFile = inputFiles.pop();
+    const file = inputFile.substring(inputFile.lastIndexOf('/') + 1);
+    const fullPath = path.join(
+      incomingDirectory,
+      inputFile,
+    );
+    console.log(chroma.yellow(`${move ? 'Moving' : 'Copying'} ${inputFile} to ${outputDirectory}`));
 
-    return console.log(chroma.green(`Copied ${inputFile} successfuly`));
-  });
-};
+    const progressBar = new cliProgress.Bar({
+      barCompleteChar: '#',
+      barIncompleteChar: '.',
+      format: `${chroma.green(' {bar}')} {percentage}% | ETA: {eta}s | {value}/{total}`,
+    });
+    fs.stat(fullPath, (err, stat) => {
+      if (err) {
+        reject(err);
+      }
 
-// TODO: Show progress bar, per each copy. Sequentially? Investigate streams for this
-export const copyFiles = (files, inputDirectory, outputDirectory, move) => {
-  fs.exists(outputDirectory, (exists) => {
-    if (!exists) {
-      mkdirp.sync(outputDirectory);
-    }
+      const filesize = stat.size;
+      let bytesCopied = 0;
+      progressBar.start(100, 0);
 
-    files.forEach((file) => {
-      copyFile(file, outputDirectory, inputDirectory, move);
+      const readStream = fs.createReadStream(fullPath);
+
+      readStream.on('data', (buffer) => {
+        bytesCopied += buffer.length;
+        const percentage = ((bytesCopied / filesize) * 100).toFixed(2);
+        progressBar.update(percentage);
+      });
+      readStream.on('end', () => {
+        progressBar.stop();
+        if (move) {
+          fs.unlinkSync(fullPath);
+        }
+
+        console.log('\n');
+        resolve(copyFile(inputFiles, outputDirectory, incomingDirectory, move));
+      });
+
+      readStream.pipe(fs.createWriteStream(path.join(outputDirectory, file)));
     });
   });
+
+
+export const copyFiles = async (files, inputDirectory, outputDirectory, move) => {
+  const exists = fs.existsSync(outputDirectory);
+  if (!exists) {
+    mkdirp.sync(outputDirectory);
+  }
+
+  try {
+    await copyFile(files, outputDirectory, inputDirectory, move);
+    return 0;
+  } catch (error) {
+    throw error;
+  }
 };

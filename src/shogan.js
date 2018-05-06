@@ -66,7 +66,7 @@ const config = new Configstore('shogan');
       .map(file => file.replace(options.unorganizedShowsDirectory, ''));
 
     if (filteredFiles.length) {
-      copyFiles(filteredFiles, options.unorganizedShowsDirectory, path.join(options.organizedShowsDirectory, `${options.showName}/Season ${options.season}`), options.move);
+      await copyFiles(filteredFiles, options.unorganizedShowsDirectory, path.join(options.organizedShowsDirectory, `${options.showName}/Season ${options.season}`), options.move);
     } else {
       console.log(chroma.bgred(`Sorry, no files found for the search term ${options.searchQuery}`));
     }
@@ -74,9 +74,9 @@ const config = new Configstore('shogan');
     const { loop } = await restartLoop();
 
     if (loop) {
-      copyMoveLoop();
+      await copyMoveLoop();
     } else {
-      console.log(chroma.green('Sayonara!!!'));
+      console.log(chroma.green('\nSayonara Senpai!!!'));
     }
   }());
 }());
