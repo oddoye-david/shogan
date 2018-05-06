@@ -76,3 +76,13 @@ export const updateShowDirectories = () => {
 
   return inquirer.prompt([question]);
 };
+
+export const restartLoop = () => {
+  const question = {
+    type: 'confirm',
+    name: 'loop',
+    message: 'Move/Copy another TV Show?',
+  };
+
+  return inquirer.prompt([question]);
+};

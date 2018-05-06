@@ -13,11 +13,11 @@ import {
   getShowDetails,
   moveOrCopy,
   updateShowDirectories,
+  restartLoop,
 } from './lib/inquirer';
 
 const config = new Configstore('shogan');
 
-// TODO: Run in loop to copy/move multiple shows
 (async function main() {
   clear();
   console.log(chroma.red(figlet.textSync(`Shogan v${pack.version}`, { horizontalLayout: 'full' })));
@@ -51,21 +51,32 @@ const config = new Configstore('shogan');
       config.set(key, `/home/${value}`);
     });
   }
-  const searchQuery = await getSearchQuery();
-  const showDetails = await getShowDetails();
-  const move = await moveOrCopy();
-  const options = {
-    ...showDirectories, ...searchQuery, ...showDetails, ...move,
-  };
 
-  const filteredFiles = glob
-    .sync(`${options.unorganizedShowsDirectory}/**/*.+(mkv|avi|mp4)`)
-    .filter(file => file.toLowerCase().includes(options.searchQuery.toLowerCase()))
-    .map(file => file.replace(options.unorganizedShowsDirectory, ''));
+  (async function copyMoveLoop() {
+    const searchQuery = await getSearchQuery();
+    const showDetails = await getShowDetails();
+    const move = await moveOrCopy();
+    const options = {
+      ...showDirectories, ...searchQuery, ...showDetails, ...move,
+    };
 
-  if (filteredFiles.length) {
-    copyFiles(filteredFiles, options.unorganizedShowsDirectory, path.join(options.organizedShowsDirectory, `${options.showName}/Season ${options.season}`), options.move);
-  } else {
-    console.log(chroma.bgred(`Sorry, no files found for the search term ${options.searchQuery}`));
-  }
+    const filteredFiles = glob
+      .sync(`${options.unorganizedShowsDirectory}/**/*.+(mkv|avi|mp4)`)
+      .filter(file => file.toLowerCase().includes(options.searchQuery.toLowerCase()))
+      .map(file => file.replace(options.unorganizedShowsDirectory, ''));
+
+    if (filteredFiles.length) {
+      copyFiles(filteredFiles, options.unorganizedShowsDirectory, path.join(options.organizedShowsDirectory, `${options.showName}/Season ${options.season}`), options.move);
+    } else {
+      console.log(chroma.bgred(`Sorry, no files found for the search term ${options.searchQuery}`));
+    }
+
+    const { loop } = await restartLoop();
+
+    if (loop) {
+      copyMoveLoop();
+    } else {
+      console.log(chroma.green('Sayonara!!!'));
+    }
+  }());
 }());
