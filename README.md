@@ -20,4 +20,4 @@ And shogan will be installed globally to your system path.
 
 # Usage
 
-[![asciicast](https://asciinema.org/a/qZxtm8hnCe4t1J7sN2Jolzb78.png)](https://asciinema.org/a/qZxtm8hnCe4t1J7sN2Jolzb78)
+[![asciicast](https://asciinema.org/a/rzBSig16EUclnuQfKq7UnBTqQ.png)](https://asciinema.org/a/rzBSig16EUclnuQfKq7UnBTqQ)
